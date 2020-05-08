@@ -1,0 +1,62 @@
+<!-- Search component -->
+<!-- props:
+	onsearch = parent function
+-->
+
+<search>
+    <div class="container-fluid mb-3">
+        <!-- Form -->
+        <form id="form" class="form-group" onsubmit="{ onBeforeSearch }">
+
+            <h3 class="text-primary mt-4">Search</h3>
+            <div class="row mb-2">
+                <!-- Select for belonging -->
+                <belongingselect onbelongingchange="{ onBelongingChange }"/>
+                <!-- Input for name and title -->
+                <autocomplete belonging="{ belonging }"/>
+            </div>
+
+            <!-- Filters -->
+            <searchfilters belonging="{ belonging }"/>
+
+            <div class="row mb-2 justify-content-center">
+                <!-- Submit button -->
+                <button class="btn btn-outline-primary m-2" type="submit">
+                    <span if="{ loading }" class="spinner-border spinner-border-sm mr-1"/>
+                    { loading ? 'Loading' : 'Search' }
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        export default {
+            //Is loading
+            loading: false,
+            //Current belonging
+            belonging: ARTIST_BELONGING,
+            //Riot function when mounted
+            onMounted(){
+                $(function () {
+                    $("[data-toggle='popover']").popover({
+                        trigger: 'focus'
+                    });
+                });
+            },
+            //On belonging changed
+            onBelongingChange(e) {
+                this.belonging = e.target.value;
+                this.update();
+            },
+            //Before calling parent function
+            onBeforeSearch(e) {
+                //Activating spinner animation
+                this.loading = true;
+                this.update();
+                //Animation will be stopped on the next update
+                this.loading = false;
+                this.props.onsearch(e);
+            }
+        }
+    </script>
+</search>

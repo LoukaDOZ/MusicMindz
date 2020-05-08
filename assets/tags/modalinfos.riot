@@ -1,0 +1,181 @@
+<!-- Show a result in a modal popup. All infos are showed unlike the card -->
+<!-- props:
+	element = element
+	belonging = belonging
+	eid = modalinfos id
+-->
+
+<modalinfos>
+    <!-- Modal popup -->
+    <div class="modal fade" id="{ props.eid }" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <!-- Modal head -->
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bold" id="exampleModalCenterTitle">{ props.element.name || 'Unknown' }</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- Modal content -->
+                <div class="modal-body p-0 text-center">
+                    <!-- Image -->
+                    <!-- For albums and songs -->
+                    <img if="{ props.belonging !== constants.ARTIST_BELONGING }" src="{ image ? image : getImage() }"
+                         class="my-img my-img-shadow mb-2 rounded mt-2" alt="No image"/>
+                    <!-- Infos -->
+                    <ul class="list-group text-capitalize text-left">
+                        <!-- Name/title -->
+                        <li class="list-group-item p-0 rounded-0 border-left-0 border-right-0 { image ? '' : 'border-top-0' }">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    { props.belonging === constants.ARTIST_BELONGING ? "name" : "title" }
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.name || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Type -->
+                        <li if="{ props.belonging !== constants.RECORDING_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    type
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.type || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Authors -->
+                        <li if="{ props.belonging !== constants.ARTIST_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    author(s)
+                                </li>
+                                <li if="{ !props.element.authors }" class="list-group-item border-0">
+                                    unknown
+                                </li>
+                                <li if="{ props.element.authors }" class="list-group-item border-0 p-0">
+                                    <ul class="list-group list-group-horizontal rounded-0 d-flex flex-wrap">
+                                        <li if="{ props.element.authors }" each="{ author in props.element.authors }"
+                                            class="list-group-item border-0">
+                                            { author }
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Gender -->
+                        <li if="{ props.belonging === constants.ARTIST_BELONGING
+                        && (props.element.type === constants.PERSON_TYPE || props.element.type === constants.CHARACTER_TYPE) }"
+                            class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    gender
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.gender || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Gender -->
+                        <li if="{ props.belonging === constants.ARTIST_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    associated area
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.area || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- album -->
+                        <li if="{ props.belonging === constants.RECORDING_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    album
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.album || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- begin date -->
+                        <li if="{ props.belonging === constants.ARTIST_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    { props.element.type === constants.PERSON_TYPE
+                                    || props.element.type === constants.CHARACTER_TYPE ? "Birth" : "Begin" }
+                                    date
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.begin || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- end date -->
+                        <li if="{ props.belonging === constants.ARTIST_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    { props.element.type === constants.PERSON_TYPE
+                                    || props.element.type === constants.CHARACTER_TYPE ? "Death" : "End" }
+                                    date
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.end || 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- ended -->
+                        <li if="{ props.belonging === constants.ARTIST_BELONGING }" class="list-group-item p-0 rounded-0 border-left-0 border-right-0 border-bottom-0">
+                            <ul class="list-group rounded-0">
+                                <li class="list-group-item font-weight-bold border-0">
+                                    ended
+                                </li>
+                                <li class="list-group-item border-0">
+                                    { props.element.dead ? 'Yes' : props.element.dead === false ? 'No' : 'Unknown' }
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            //Constants from assets/js/constants.js
+            constants: {
+                ARTIST_BELONGING: ARTIST_BELONGING,
+                RECORDING_BELONGING: RECORDING_BELONGING,
+                RELEASE_GROUP_BELONGING: RELEASE_GROUP_BELONGING,
+                PERSON_TYPE: PERSON_TYPE,
+                CHARACTER_TYPE: CHARACTER_TYPE
+            },
+            //Image
+            image: null,
+            //Riot function before update
+            onUpdated() {
+                this.image = null;
+            },
+            //Get the corresponding url image (only form albums and songs)
+            getImage(){
+                //Making request to get image
+                requestMaker.doRequestImage(this.props.belonging,this.props.element.id).then(this.onSuccess,this.onError);
+            },
+            //On request succeeded
+            onSuccess(response) {
+                //If ok, giving the url and updating
+                this.image = response;
+                this.update();
+            },
+            //On request failed
+            onError(error) {
+                //If error, printing error
+                console.log(error);
+            }
+        }
+    </script>
+</modalinfos>

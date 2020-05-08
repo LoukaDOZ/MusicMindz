@@ -1,0 +1,21 @@
+/* My CSS classes */
+
+/* My style for images */
+.my-img {
+    height: 300px !important;
+    background-color: #666666;
+    color: white;
+    text-align: center;
+}
+
+/* My style of shadows for images */
+.my-img-shadow {
+    box-shadow: 0.6rem 0.6rem 1rem rgba(0, 0, 0, 0.4) !important;
+}
+
+/* My position for fixed component */
+.my-fixed-br {
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+}

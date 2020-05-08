@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width = device-width, initial-scale = 1">
+	<link rel="icon" type="image/png" href="assets/images/icon.png">
+	<title>MusicMindz</title>
+
+	<!-- My js files -->
+	<script src="assets/js/request.js" type="text/javascript"></script>
+	<script src="assets/js/constants.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="assets/css/style.css">
+	<!-- Bootstrap files -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="assets/js/boostrap/bootstrap.js" type="text/javascript"></script>
+	<script src="assets/js/boostrap/bootstrap.bundle.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="assets/css/boostrap/bootstrap.css">
+	<!-- Tags -->
+	<script src="assets/tags/app.riot" type="riot"></script>
+	<script src="assets/tags/pagehead.riot" type="riot"></script>
+	<script src="assets/tags/pagefooter.riot" type="riot"></script>
+	<script src="assets/tags/belongingselect.riot" type="riot"></script>
+	<script src="assets/tags/search.riot" type="riot"></script>
+	<script src="assets/tags/searchfilters.riot" type="riot"></script>
+	<script src="assets/tags/autocomplete.riot" type="riot"></script>
+	<script src="assets/tags/list.riot" type="riot"></script>
+	<script src="assets/tags/card.riot" type="riot"></script>
+	<script src="assets/tags/modalinfos.riot" type="riot"></script>
+	<script src="assets/tags/sort.riot" type="riot"></script>
+	<script src="assets/tags/pagination.riot" type="riot"></script>
+	<!-- Riot -->
+	<script src="https://cdn.jsdelivr.net/npm/riot@4/riot+compiler.min.js"></script>
+
+</head>
+<script>
+	//Initializing
+	riot.compile().then(()=>{
+		riot.mount('pagehead');
+		riot.mount('app');
+		riot.mount('pagefooter');
+	});
+</script>
+<body class="bg-secondary" style="overflow-x: hidden;">
+
+	<!-- Head -->
+	<pagehead></pagehead>
+	<!-- Content -->
+	<app></app>
+	<!-- Footer -->
+	<pagefooter></pagefooter>
+
+</body>
+</html>

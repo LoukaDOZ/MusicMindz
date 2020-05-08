@@ -1,0 +1,71 @@
+<!-- Card to show results. One card = one result -->
+<!-- props:
+	infos = request infos
+	element = element
+	eid = modalinfos id
+-->
+
+<card>
+    <div class="card shadow-sm mb-4">
+        <!-- Image -->
+        <!-- For albums and songs -->
+        <img if="{ props.infos.belonging !== constants.ARTIST_BELONGING }" src="{ image ? image : getImage() }"
+             class="card-img-top my-img" alt="No image"/>
+        <!-- Card body -->
+        <div class="card-body">
+            <!-- Primary infos -->
+            <!-- Name -->
+            <div class="card-title font-weight-bold">
+                { props.element.name ? props.element.name : 'Unknown' }
+            </div>
+            <!-- Type -->
+            <div if="{ props.infos.belonging !== constants.RECORDING_BELONGING }" class="card-text text-capitalize">
+                type : { props.element.type ? (props.element.type === constants.EP_TYPE ? 'extended play' : props.element.type) : 'Unknown' }
+            </div>
+            <!-- Authors -->
+            <div if="{ props.infos.belonging !== constants.ARTIST_BELONGING }" class="card-text mt-2">
+                Author(s) : { props.element.authors ? props.element.authors[0] : 'Unknown' }
+                <span if="{ props.element.authors.length > 1 }">, and { props.element.authors.length - 1 } more</span>
+            </div>
+            <!-- More info button -->
+            <button type="button" class="btn btn-primary text-secondary container-fluid mt-2" data-toggle="modal" data-target="#{ props.eid }">
+                See more
+            </button>
+        </div>
+    </div>
+    <!-- More infos modal popup -->
+    <modalinfos eid="{ props.eid }" belonging="{ props.infos.belonging }" element="{ props.element }"/>
+
+    <script>
+        export default {
+            //Constants from assets/js/constants.js
+            constants: {
+                ARTIST_BELONGING: ARTIST_BELONGING,
+                RECORDING_BELONGING: RECORDING_BELONGING,
+                EP_TYPE: EP_TYPE
+            },
+            //Image
+            image: null,
+            //Riot function before update
+            onUpdated() {
+                this.image = null;
+            },
+            //Get the corresponding url image (only form albums and songs)
+            getImage(){
+                //Making request to get image
+                requestMaker.doRequestImage(this.props.infos.belonging,this.props.element.id).then(this.onSuccess,this.onError);
+            },
+            //On request succeeded
+            onSuccess(response) {
+                //If ok, giving the url and updating
+                this.image = response;
+                this.update();
+            },
+            //On request failed
+            onError(error) {
+                //If error, printing error
+                console.log(error);
+            }
+        }
+    </script>
+</card>

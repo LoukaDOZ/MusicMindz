@@ -1,0 +1,42 @@
+<!-- Displays buttons to sort the current page -->
+<!-- props:
+	onsortchange = parent function
+	sort = current sort
+-->
+
+<sort>
+    <div class="container-fluid mb-4">
+        <span class="text-primary">Sort page by</span>
+        <div class="d-flex justify-content-between mt-2">
+            <!-- Pertinence sort button -->
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary btn-outline-primary { props.sort === constants.PERTINENCE_SORT ? 'active' : '' }">
+                    <input type="radio" name="sort" value="{ constants.PERTINENCE_SORT }" onclick="{ props.onsortchange }"
+                           checked="{ props.sort === constants.PERTINENCE_SORT ? 'checked' : '' }"> Pertinence
+                </label>
+                <!-- Alphabetic sort button -->
+                <label class="btn btn-secondary btn-outline-primary { props.sort === constants.ALPHABETIC_SORT ? 'active' : '' }">
+                    <input type="radio" name="sort" value="{ constants.ALPHABETIC_SORT }" onclick="{ props.onsortchange }"
+                           checked="{ props.sort === constants.ALPHABETIC_SORT ? 'checked' : '' }"> A - Z
+                </label>
+                <!-- Inverse of alphabetic sort -->
+                <label class="btn btn-secondary btn-outline-primary { props.sort === constants.INVERSE_ALPHABETIC_SORT ? 'active' : '' }">
+                    <input type="radio" name="sort" value="{ constants.INVERSE_ALPHABETIC_SORT }" onclick="{ props.onsortchange }"
+                           checked="{ props.sort === constants.INVERSE_ALPHABETIC_SORT ? 'checked' : '' }"> Z - A
+                </label>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        export default {
+            //Constants from assets/js/constants.js
+            constants: {
+                ALPHABETIC_SORT: ALPHABETIC_SORT,
+                INVERSE_ALPHABETIC_SORT: INVERSE_ALPHABETIC_SORT,
+                PERTINENCE_SORT: PERTINENCE_SORT
+            }
+        }
+    </script>
+</sort>

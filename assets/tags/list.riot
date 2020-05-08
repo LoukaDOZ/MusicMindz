@@ -1,0 +1,27 @@
+<!-- Displays card from each element of response -->
+<!-- props:
+	infos = information of the request
+	array = results
+-->
+
+<list>
+	<!-- If there is no result to show -->
+	<div if="{ props.infos.count === 0 }" class="alert alert-danger ml-3 mr-3" role="alert">
+		No result found.
+	</div>
+	<!-- If there is at least 1 result -->
+	<div if="{ props.infos.count > 0 }" class="container-fluid">
+		<!-- Showing amount of results found and the interval of showed element -->
+		<div class="badge badge-primary mb-2">
+			{ props.infos.count } result(s) | { (props.infos.offset + 1) } to
+			{ (props.infos.offset + props.infos.max) > props.infos.count ? props.infos.count : (props.infos.offset + props.infos.max) }
+		</div>
+		<!-- Displaying results -->
+		<div class="row">
+			<div class="col-xs-12 col-sm-10 col-md-6 col-lg-4 col-xl-3
+			offset-xs-0 offset-sm-1 offset-md-0 offset-lg-0 offset-xl-0" each="{ (element,index) in props.results }">
+				<card eid="e{ index }" element="{ element }" infos="{ props.infos }"/>
+			</div>
+		</div>
+	</div>
+</list>

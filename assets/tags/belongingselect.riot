@@ -1,0 +1,38 @@
+<!-- Belonging selector between artist, album and song -->
+<!-- props:
+	onbelongingchange = parent function
+-->
+
+<belongingselect class="col-xs-12 col-sm-4 col-md-3 col-lg-3 col-xl-3 mb-2">
+    <div class="input-group">
+        <!-- Select for belonging -->
+        <select id="belonging" class="custom-select" name="belonging" onchange="{ props.onbelongingchange }">
+            <option value="{ constants.ARTIST_BELONGING }">
+                Artist
+            </option>
+            <option value="{ constants.RELEASE_GROUP_BELONGING }">
+                Album
+            </option>
+            <option value="{ constants.RECORDING_BELONGING }">
+                Song
+            </option>
+        </select>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-light" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+                    data-content="What are you looking for? An artist? An album? A song?">
+                ?
+            </button>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            //Constants from assets/js/constants.js
+            constants: {
+                ARTIST_BELONGING: ARTIST_BELONGING,
+                RECORDING_BELONGING: RECORDING_BELONGING,
+                RELEASE_GROUP_BELONGING: RELEASE_GROUP_BELONGING
+            },
+        }
+    </script>
+</belongingselect>

@@ -1,0 +1,88 @@
+<!-- Show a list of pages -->
+<!-- Show :
+    - the first page
+    - the last page if there are 2 pages at least
+    - 2 pages before and 2 pages after the current one if possible
+-->
+<!-- props:
+    infos = information of the request
+	onpagechange = parent function when the page change
+-->
+
+<pagination>
+    <ul class="pagination justify-content-center">
+        <!-- Previous button -->
+        <li class="page-item">
+            <a class="page-link" data-page="{ constants.PREVIOUS_PAGE }" href="#pagination" onclick="{ props.onpagechange }">
+                &laquo;
+            </a>
+        </li>
+        <!-- First page -->
+        <li if="{ props.infos.count > 0 }" class="page-item { current === 0 ? 'active' : '' }">
+            <a class="page-link" data-page="0" href="#pagination" onclick="{ props.onpagechange }">
+                1
+            </a>
+        </li>
+        <!-- If there is more than 3 pages before the selected one -->
+        <li if="{ current > 3 }" class="page-item disabled">
+            <a class="page-link" href="#pagination">
+                ...
+            </a>
+        </li>
+        <!-- Each pages except the first and the last ones -->
+        <li each="{ page in pages }" if="{ page > 0 && page < max }" class="page-item { page === current ? 'active' : '' }">
+            <a class="page-link" data-page="{ page }" href="#pagination" onclick="{ props.onpagechange }">
+                { (page + 1) }
+            </a>
+        </li>
+        <!-- If there is more than 3 pages after the selected one -->
+        <li if="{ current < max - 3 }" class="page-item disabled">
+            <a class="page-link" href="#pagination">
+                ...
+            </a>
+        </li>
+        <!-- Last page -->
+        <li if="{ max > 0 }" class="page-item { current === max ? 'active' : '' }">
+            <a class="page-link" data-page="{ max }" href="#pagination" onclick="{ props.onpagechange }">
+                { max + 1 }
+            </a>
+        </li>
+        <!-- Next button -->
+        <li class="page-item">
+            <a class="page-link" data-page="{ constants.NEXT_PAGE }" href="#pagination" onclick="{ props.onpagechange }">
+                &raquo;
+            </a>
+        </li>
+    </ul>
+
+    <script>
+        export default {
+            //Pages
+            pages: [],
+            //Current page
+            current: 0,
+            //maximum page
+            max: 0,
+            //Constants from assets/js/constants.js
+            constants: {
+                NEXT_PAGE: NEXT_PAGE,
+                PREVIOUS_PAGE: PREVIOUS_PAGE
+            },
+            //Riot function for actions before updating
+            onBeforeUpdate() {
+                this.pages = [];
+                //Current page
+                this.current = this.props.infos.offset / this.props.infos.max;
+                //Biggest page
+                this.max = Math.floor(this.props.infos.count / this.props.infos.max);
+
+                //Initializing array with pages to show
+                //If it's possible, 2 pages before and 2 pages after the current one
+                for(let i  = this.current - 2; i < (this.current + 3) && i < this.max; i++){
+                    if(i >= 0)
+                        this.pages.push(i);
+                }
+            }
+        }
+    </script>
+</pagination>

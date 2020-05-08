@@ -1,0 +1,58 @@
+<!-- Autocomplete input with element names -->
+<!-- props:
+	belonging = element belonging
+-->
+
+<autocomplete  class="col-xs-12 col-sm-8 col-md-9 col-lg-9 col-xl-9 mb-2">
+    <div class="input-group">
+        <!-- Input for name or title -->
+        <input id="search" type="text" list="autocomplete" autocomplete="off" class="form-control" name="search"
+               placeholder="Name or title" onfocus="{ onNameChange }" oninput="{ onNameChange }">
+        <!-- Autocomplete -->
+        <datalist id="autocomplete">
+            <option each="{ result in results }" if="{ result.name }">{ result.name }</option>
+        </datalist>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-light" data-toggle="popover" data-placement="bottom" data-trigger="focus"
+                    data-content="Enter a name or a title. If you are not looking for a name or a title specifically, leave this field empty and just apply filters.">
+                ?
+            </button>
+        </div>
+    </div>
+
+    <script>
+        export default {
+            results: [],
+            //Riot function when mounted
+            onMounted(){
+                $(function () {
+                    $("[data-toggle='popover']").popover({
+                        trigger: 'focus'
+                    });
+                });
+            },
+            //On name changed
+            onNameChange(e) {
+                let infos = new RequestInfos();
+                infos.name = e.target.value;
+                infos.belonging = this.props.belonging;
+                //Making request
+                requestMaker.doRequest(infos).then(this.onSuccess,this.onError);
+            },
+            //On request succeeded
+            onSuccess(response) {
+                //Copying response
+                this.results = Array.from(response.results);
+                this.update();
+            },
+            //On request failed
+            onError(error) {
+                //Printing error
+                console.log(error);
+                //Empty response array
+                this.results = [];
+                this.update();
+            }
+        }
+    </script>
+</autocomplete>

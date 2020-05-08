@@ -1,0 +1,146 @@
+<!-- Contains the whole app -->
+
+<app>
+	<!-- Search component -->
+	<search onsearch="{ onSearch }"/>
+	<!-- Sort component -->
+	<sort onsortchange="{ onSortChange }" sort="{ sort }"/>
+	<!-- Pagination component top -->
+	<pagination id="pagination" infos="{ infos }" onpagechange="{ onPageChange }"/>
+	<!-- Results list component -->
+	<list results="{ sortedResults }" infos="{ infos }"/>
+	<!-- Pagination component bottom -->
+	<pagination infos="{ infos }" onpagechange="{ onPageChange }"/>
+
+	<script>
+		export default {
+			//Request answer
+			infos: new RequestInfos(),
+			//Sorted results
+			sortedResults: [],
+			//Selected sort
+			sort: PERTINENCE_SORT,
+			onSearch(e) {
+				e.preventDefault();
+				let target = e.target;
+				let belonging = target.belonging.value;
+				let type = target.type.value;
+
+				//Initializing request
+				//Name
+				this.infos.name = target.search.value;
+				//Belonging
+				this.infos.belonging = belonging;
+				//Maximum amount of results per page
+				this.infos.max = parseInt(target.count.value);
+				//Type
+				this.infos.filters.type = belonging !== RECORDING_BELONGING && type !== ALL_TYPE ? type : null;
+				//Begin date
+				this.infos.filters.begin = type !== OTHER_TYPE
+				&& belonging === ARTIST_BELONGING ? target.begin.value : null;
+				//End date
+				this.infos.filters.end = type !== OTHER_TYPE
+				&& belonging === ARTIST_BELONGING ? target.end.value : null;
+				//Current area
+				this.infos.filters.area = belonging === ARTIST_BELONGING ? target.area.value : null;
+				//Gender
+				this.infos.filters.gender = belonging === ARTIST_BELONGING && type
+				&& (type === PERSON_TYPE || type === CHARACTER_TYPE)
+				&& target.gender.value !== NEITHER_GENDER ? target.gender.value : null;
+				//Author
+				this.infos.filters.authors = belonging !== ARTIST_BELONGING ? target.author.value : null;
+
+				this.infos.offset = 0;
+
+				//Making request
+				requestMaker.doRequest(this.infos).then(this.onSuccess,this.onError);
+			},
+			//On sort selected
+			onSortChange(e) {
+				this.sort = e.target.value;
+				this.update();
+			},
+			//On page selected (pagination)
+			onPageChange(e) {
+				let page = e.target.dataset.page;
+
+				switch (page) {
+					//Next page button
+					case NEXT_PAGE:
+						//Testing if it's already the maximum page
+						if(this.infos.offset < this.infos.count)
+							this.infos.offset += this.infos.max;
+						else
+							//Do nothing if it's already the maximum page
+							return;
+						break;
+					//Previous page button
+					case PREVIOUS_PAGE:
+						//Testing if it's already the minimum page
+						if(this.infos.offset > 0)
+							this.infos.offset -= this.infos.max;
+						else
+							//Do nothing if it's already the minimum page
+							return;
+						break;
+					//Selecting a precise page
+					default:
+						this.infos.offset = parseInt(page) * this.infos.max;
+						break;
+				}
+
+				requestMaker.doRequest(this.infos).then(this.onSuccess,this.onError);
+			},
+			//Riot function for actions before updating
+			onBeforeUpdate() {
+				//If displaying the list
+				if(!this.selected) {
+					//Copying results
+					this.sortedResults = Array.from(this.infos.results);
+
+					switch (this.sort) {
+							//If alphabetic sort
+						case ALPHABETIC_SORT:
+							this.sortedResults.sort(function (a, b) {
+								//Lexicographical comparison
+								return a.name.localeCompare(b.name);
+							});
+							break;
+							//If inverse of alphabetic sort
+						case INVERSE_ALPHABETIC_SORT:
+							this.sortedResults.sort(function (a, b) {
+								//Lexicographical comparison inverted
+								return b.name.localeCompare(a.name);
+							});
+							break;
+							//Sort by pertinence
+						case PERTINENCE_SORT:
+							this.sortedResults.sort(function (a, b) {
+								//Score comparison (got in request answer from MusicBrainz API)
+								if (a.score > b.score)
+									return -1;
+								if (a.score < b.score)
+									return 1;
+								return 0;
+							});
+							break;
+					}
+				}
+			},
+			//On request succeeded
+			onSuccess(response) {
+				//Copying response
+				this.infos = Object.assign(this.infos,response);
+				this.update();
+			},
+			//On request failed
+			onError(error) {
+				//Printing error
+				console.log(error);
+				//Empty response array
+				this.infos = new RequestInfos();
+				this.update();
+			}
+		}
+	</script>
+</app>
